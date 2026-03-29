@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Download, FileText, FileSpreadsheet, X } from 'lucide-react';
 import { exportToPDF, exportToExcel, exportToCSV } from '../utils/exportUtils';
-import { useTheme } from '../contexts/ThemeContext';
+// import { useTheme } from '../contexts/ThemeContext';
 
 interface Expense {
   id: number;
@@ -27,7 +27,7 @@ const ExportMenu: React.FC<ExportMenuProps> = ({
   remainingBudget,
   onClose,
 }) => {
-  const { t } = useTheme();
+  // const { t } = useTheme();
   const [exporting, setExporting] = useState(false);
   
   const getCurrentMonth = () => {
