@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Plus, X, Upload, Image as ImageIcon } from 'lucide-react';
+import { Plus, X} from 'lucide-react';
 import { useTheme } from '../contexts/ThemeContext';
 
 interface Category {
@@ -37,8 +37,6 @@ const AddExpenseForm: React.FC<AddExpenseFormProps> = ({
     expense_date: new Date().toISOString().split('T')[0],
   });
   
-  const [receiptImage, setReceiptImage] = useState<File | null>(null);
-  const [receiptPreview, setReceiptPreview] = useState<string | null>(null);
   
   const [showAddCategory, setShowAddCategory] = useState(categories.length === 0);
   const [newCategory, setNewCategory] = useState({
@@ -65,36 +63,7 @@ const AddExpenseForm: React.FC<AddExpenseFormProps> = ({
     }
   };
   
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      // التحقق من نوع الملف
-      if (!file.type.startsWith('image/')) {
-        alert('Please select an image file');
-        return;
-      }
-      
-      // التحقق من حجم الملف (5MB max)
-      if (file.size > 5 * 1024 * 1024) {
-        alert('Image size must be less than 5MB');
-        return;
-      }
-      
-      setReceiptImage(file);
-      
-      // إنشاء معاينة
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setReceiptPreview(reader.result as string);
-      };
-      reader.readAsDataURL(file);
-    }
-  };
   
-  const removeImage = () => {
-    setReceiptImage(null);
-    setReceiptPreview(null);
-  };
   
   const validate = (): boolean => {
     const newErrors: Record<string, string> = {};
@@ -126,7 +95,6 @@ const AddExpenseForm: React.FC<AddExpenseFormProps> = ({
       amount: Number(formData.amount),
       description: formData.description,
       expense_date: formData.expense_date,
-      receipt_image: receiptImage || undefined,
     });
     
     // إعادة تعيين النموذج
@@ -136,8 +104,6 @@ const AddExpenseForm: React.FC<AddExpenseFormProps> = ({
       description: '',
       expense_date: new Date().toISOString().split('T')[0],
     });
-    setReceiptImage(null);
-    setReceiptPreview(null);
   };
   
   const handleAddNewCategory = () => {
@@ -367,52 +333,6 @@ const AddExpenseForm: React.FC<AddExpenseFormProps> = ({
           />
         </div>
         
-        {/* Receipt Image Upload */}
-        <div>
-          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-              {t('receiptImageOptional')}
-          </label>
-          
-          {!receiptPreview ? (
-            <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg cursor-pointer bg-gray-50 dark:bg-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors">
-              <div className="flex flex-col items-center justify-center pt-5 pb-6">
-                <Upload className="w-10 h-10 mb-2 text-gray-400" />
-                <p className="mb-2 text-sm text-gray-500 dark:text-gray-400">
-                  <span className="font-semibold">{t('clickToUpload')}</span> {t('dragAndDrop')}
-                </p>
-                <p className="text-xs text-gray-500 dark:text-gray-400">
-                  PNG, JPG, WEBP ({t('maxSize')})
-                </p>
-              </div>
-              <input
-                type="file"
-                accept="image/*"
-                onChange={handleImageChange}
-                className="hidden"
-                disabled={categories.length === 0}
-              />
-            </label>
-          ) : (
-            <div className="relative">
-              <img
-                src={receiptPreview}
-                alt="Receipt preview"
-                className="w-full h-48 object-cover rounded-lg border-2 border-gray-300 dark:border-gray-600"
-              />
-              <button
-                type="button"
-                onClick={removeImage}
-                className="absolute top-2 right-2 p-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors shadow-lg"
-              >
-                <X size={20} />
-              </button>
-              <div className="absolute bottom-2 left-2 bg-black/70 text-white px-3 py-1 rounded-lg text-sm flex items-center gap-2">
-                <ImageIcon size={16} />
-                {receiptImage?.name}
-              </div>
-            </div>
-          )}
-        </div>
         
         {/* Submit Button */}
         <button
