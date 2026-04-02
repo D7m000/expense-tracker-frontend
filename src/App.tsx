@@ -72,13 +72,6 @@ function App() {
     try {
       let receipt_image_path = null;
       
-      // رفع الصورة أولاً لو موجودة
-      if (expense.receipt_image) {
-        const uploadResult = await expenseAPI.uploadReceipt(expense.receipt_image);
-        if (uploadResult.success) {
-          receipt_image_path = uploadResult.filename;
-        }
-      }
       
       // إضافة المصروف مع مسار الصورة
       await expenseAPI.addExpense({
